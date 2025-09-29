@@ -1,15 +1,15 @@
 ## **Plan du Contenu :**
 
-* **[1. Introduction aux systèmes embarqués](#1-introduction-aux-systèmes-embarqués)**
-* **[2. Types de données et registres](#2-types-de-données-et-registres)**
-* **[3. Manipulation des bits](#3-manipulation-des-bits)**
-* **[4. Mémoire et pointeurs en embarqué](#4-mémoire-et-pointeurs-en-embarqué)**
-* **[5. Structure d’un programme C embarqué](#5-structure-dun-programme-c-embarqué)**
-* **[6. Entrées/Sorties (GPIO)](#6-entrées-sorties-gpio)**
-* **[7. Timers et interruptions](#7-timers-et-interruptions)**
-* **[8. Communication série (UART, SPI, I2C)](#8-communication-série-uart-spi-i2c)**
-* **[9. Optimisation et directives](#9-optimisation-et-directives)**
-* **[10. Organisation modulaire du code](#10-organisation-modulaire-du-code)**
+* **[Introduction aux systèmes embarqués](#1-introduction-aux-systèmes-embarqués)**
+* **[Types de données et registres](#2-types-de-données-et-registres)**
+* **[Manipulation des bits](#3-manipulation-des-bits)**
+* **[Mémoire et pointeurs en embarqué](#4-mémoire-et-pointeurs-en-embarqué)**
+* **[Structure d’un programme C embarqué](#5-structure-dun-programme-c-embarqué)**
+* **[Entrées/Sorties (GPIO)](#6-entrées-sorties-gpio)**
+* **[Timers et interruptions](#7-timers-et-interruptions)**
+* **[Communication série (UART, SPI, I2C)](#8-communication-série-uart-spi-i2c)**
+* **[Optimisation et directives](#9-optimisation-et-directives)**
+* **[Organisation modulaire du code](#10-organisation-modulaire-du-code)**
 
 ---
 
