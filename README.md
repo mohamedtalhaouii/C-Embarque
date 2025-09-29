@@ -196,5 +196,3 @@ typedef struct {
 ---
 
 <h3 align="center"> 🧑🏻‍💻 | Made By : <a href="https://github.com/mohamedtalhaouii" target="_blank">Mohamed Talhaoui</a></h3>
-
-👉 Veux-tu que je développe encore plus chaque section (par ex. détailler tous les registres GPIO, UART, timers) comme dans une **documentation complète**, ou bien on garde ce format **compact de syntaxe** ?
