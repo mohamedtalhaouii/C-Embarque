@@ -1,15 +1,15 @@
 ## **Plan du Contenu :**
 
-* **[Introduction aux systèmes embarqués](#1-introduction-aux-systèmes-embarqués)**
-* **[Types de données et registres](#2-types-de-données-et-registres)**
-* **[Manipulation des bits](#3-manipulation-des-bits)**
-* **[Mémoire et pointeurs en embarqué](#4-mémoire-et-pointeurs-en-embarqué)**
-* **[Structure d’un programme C embarqué](#5-structure-dun-programme-c-embarqué)**
-* **[Entrées/Sorties (GPIO)](#6-entrées-sorties-gpio)**
-* **[Timers et interruptions](#7-timers-et-interruptions)**
-* **[Communication série (UART, SPI, I2C)](#8-communication-série-uart-spi-i2c)**
-* **[Optimisation et directives](#9-optimisation-et-directives)**
-* **[Organisation modulaire du code](#10-organisation-modulaire-du-code)**
+* **[1. Qu’est-ce qu’un système embarqué ?](#1-quest-ce-quun-système-embarqué-)**
+* **[2. Pourquoi le langage C en embarqué ?](#2-pourquoi-le-langage-c-en-embarqué-)**
+* **[3. Types de données utiles en embarqué](#3-types-de-données-utiles-en-embarqué)**
+* **[4. Manipulation des registres et bits](#4-manipulation-des-registres-et-bits)**
+* **[5. Pointeurs et mémoire](#5-pointeurs-et-mémoire)**
+* **[6. Structure d’un programme C embarqué](#6-structure-dun-programme-c-embarqué)**
+* **[7. Entrées/Sorties (GPIO)](#7-entréessorties-gpio)**
+* **[8. Timers et interruptions](#8-timers-et-interruptions)**
+* **[9. Communication série (UART, SPI, I2C)](#9-communication-série-uart-spi-i2c)**
+* **[10. Bonnes pratiques en embarqué](#10-bonnes-pratiques-en-embarqué)**
 
 ---
 
@@ -17,178 +17,149 @@
 
 ---
 
-## **1. Introduction aux systèmes embarqués**
+## **1. Qu’est-ce qu’un système embarqué ?**
 
-* Systèmes embarqués = ordinateurs spécialisés intégrés.
-* Langage C = proche du matériel, portable, efficace.
-* Pas de système d’exploitation complet → boucle infinie.
-
----
-
-## **2. Types de données et registres**
-
-* Types fixes (`<stdint.h>`) : `uint8_t`, `uint16_t`, `uint32_t`.
-* Déclaration registre mémoire :
-
-```c
-#define NOM_REGISTRE (*(volatile uint32_t*)ADRESSE)
-```
-
-* Utilisation du mot-clé `volatile` pour empêcher l’optimisation.
+* C’est un **mini-ordinateur intégré** dans un appareil (smartphone, voiture, montre connectée, robot).
+* Contraintes : **peu de mémoire, consommation réduite, temps réel**.
+* Pas de système d’exploitation complet (souvent pas de Linux/Windows).
 
 ---
 
-## **3. Manipulation des bits**
+## **2. Pourquoi le langage C en embarqué ?**
+
+* Langage **rapide** (proche du matériel).
+* Permet d’accéder **directement aux registres** du microcontrôleur.
+* Portable (un même code peut s’adapter à plusieurs architectures).
+* Utilisé dans presque **tous les microcontrôleurs** (ARM STM32, AVR Arduino, PIC, etc.).
+
+---
+
+## **3. Types de données utiles en embarqué**
+
+👉 Utiliser des tailles **fixes** (bibliothèque `<stdint.h>`).
+
+| Type       | Taille  | Exemple d’usage                     |
+| ---------- | ------- | ----------------------------------- |
+| `uint8_t`  | 8 bits  | lecture d’un GPIO                   |
+| `uint16_t` | 16 bits | valeur d’un Timer                   |
+| `uint32_t` | 32 bits | registres principaux                |
+| `volatile` | —       | variable matérielle (non optimisée) |
+
+---
+
+## **4. Manipulation des registres et bits**
+
+En embarqué, on doit activer/désactiver des **bits** spécifiques dans des registres.
 
 * Mettre un bit :
 
 ```c
-REGISTRE |= (1 << n);
+REG |= (1 << n);
 ```
 
-* Réinitialiser un bit :
+* Effacer un bit :
 
 ```c
-REGISTRE &= ~(1 << n);
+REG &= ~(1 << n);
 ```
 
 * Inverser un bit :
 
 ```c
-REGISTRE ^= (1 << n);
+REG ^= (1 << n);
 ```
 
 * Tester un bit :
 
 ```c
-if (REGISTRE & (1 << n)) { ... }
+if (REG & (1 << n)) { ... }
 ```
 
 ---
 
-## **4. Mémoire et pointeurs en embarqué**
+## **5. Pointeurs et mémoire**
 
-* Déclaration pointeur vers adresse fixe :
-
-```c
-TYPE *ptr = (TYPE*)ADRESSE;
-```
-
-* Déférencement :
+* Chaque périphérique est représenté par une **adresse mémoire**.
+* On y accède avec des **pointeurs** :
 
 ```c
-*ptr = valeur;
+#define REGISTRE (*(volatile uint32_t*)ADRESSE)
 ```
 
-* Utilisation obligatoire de `volatile` pour registres matériels.
+* `volatile` = indispensable pour dire au compilateur que la valeur peut changer à tout moment (ex. interruption, capteur).
 
 ---
 
-## **5. Structure d’un programme C embarqué**
+## **6. Structure d’un programme C embarqué**
+
+Un programme embarqué suit toujours le même schéma :
 
 ```c
-#include "fichier.h"
+#include "microcontroller.h"
 
 int main(void) {
-    initialisation();
+    initialisation();   // horloge, GPIO, UART...
     while(1) {
-        // boucle infinie
+        // Boucle infinie
     }
 }
 ```
 
-* Fonction `main()` jamais terminée.
-* Pas de bibliothèque standard complète (`stdio.h` limité).
+⚠️ La fonction `main()` **ne doit jamais se terminer**, car le programme doit tourner en continu.
 
 ---
 
-## **6. Entrées/Sorties (GPIO)**
+## **7. Entrées/Sorties (GPIO)**
 
-* Configuration d’un port en entrée/sortie.
-* Syntaxe typique :
+* **GPIO = General Purpose Input/Output**.
+* Permet d’allumer une LED, lire un bouton, contrôler un capteur.
+* Configuration typique :
 
 ```c
-PERIPHERIQUE->REGISTRE = configuration;
-PERIPHERIQUE->REGISTRE |= masque;
-PERIPHERIQUE->REGISTRE &= ~masque;
+GPIO->DIR = ... ;   // Direction (entrée ou sortie)
+GPIO->ODR = ... ;   // Écriture
+GPIO->IDR = ... ;   // Lecture
 ```
 
 ---
 
-## **7. Timers et interruptions**
+## **8. Timers et interruptions**
 
-* Déclaration d’une routine d’interruption :
+* Les **timers** créent des délais précis ou des signaux (PWM).
+* Les **interruptions (ISR)** permettent de réagir à un événement externe (bouton, capteur).
+  Syntaxe générique :
 
 ```c
 void NOM_IRQHandler(void) {
-    // code ISR
+    // Code exécuté quand l’interruption se déclenche
 }
 ```
 
-* Activation d’un timer :
+---
+
+## **9. Communication série (UART, SPI, I2C)**
+
+* **UART** : communication simple TX/RX (ex. liaison PC ↔ microcontrôleur).
+* **I2C** : bus à 2 fils maître-esclave (capteurs, mémoire).
+* **SPI** : communication rapide maître-esclave (écrans, mémoire Flash).
+
+Syntaxe générale :
 
 ```c
-TIMER->REGISTRE = valeur;
-```
-
-* Réinitialisation du flag d’interruption :
-
-```c
-TIMER->REGISTRE &= ~FLAG;
+UART->DR = donnée;    // Envoi UART
+SPI->DR = donnée;     // Envoi SPI
+I2C->DR = donnée;     // Envoi I2C
 ```
 
 ---
 
-## **8. Communication série (UART, SPI, I2C)**
+## **10. Bonnes pratiques en embarqué**
 
-* **UART** :
-
-```c
-UART->DR = donnée;
-while (!(UART->SR & FLAG));
-```
-
-* **SPI** :
-
-```c
-SPI->DR = donnée;
-while (!(SPI->SR & FLAG));
-```
-
-* **I2C** :
-
-```c
-I2C->CR1 |= START;
-I2C->DR = donnée;
-```
-
----
-
-## **9. Optimisation et directives**
-
-* `volatile` : empêcher l’optimisation sur variables liées au matériel.
-* `inline` : optimisation des fonctions courtes.
-* `static` : portée limitée à un fichier.
-* `#define` : constantes et registres.
-* `#pragma` : directives spécifiques au compilateur.
-
----
-
-## **10. Organisation modulaire du code**
-
-* Fichiers `.h` : déclarations, définitions de registres.
-* Fichiers `.c` : implémentations des fonctions.
-* Structures pour représenter des périphériques :
-
-```c
-typedef struct {
-    uint32_t REG1;
-    uint32_t REG2;
-    uint32_t REG3;
-} PERIPHERIQUE_TypeDef;
-
-#define PERIPHERIQUE ((PERIPHERIQUE_TypeDef*)ADRESSE_BASE)
-```
+* Toujours utiliser `volatile` pour registres et variables liées au matériel.
+* Éviter l’utilisation de `malloc/free` (risque de fragmentation mémoire).
+* Privilégier des **fonctions courtes** et optimisées.
+* Organiser le projet en **fichiers `.h` et `.c`** pour séparer déclaration et implémentation.
+* Toujours vérifier les **datasheets** du microcontrôleur (chaque registre est documenté).
 
 ---
 
