@@ -1,15 +1,15 @@
 ## **Plan du Contenu :**
 
-* **[1. Qu’est-ce qu’un système embarqué ?](#1-quest-ce-quun-système-embarqué-)**
-* **[2. Pourquoi le langage C en embarqué ?](#2-pourquoi-le-langage-c-en-embarqué-)**
-* **[3. Types de données utiles en embarqué](#3-types-de-données-utiles-en-embarqué)**
-* **[4. Manipulation des registres et bits](#4-manipulation-des-registres-et-bits)**
-* **[5. Pointeurs et mémoire](#5-pointeurs-et-mémoire)**
-* **[6. Structure d’un programme C embarqué](#6-structure-dun-programme-c-embarqué)**
-* **[7. Entrées/Sorties (GPIO)](#7-entréessorties-gpio)**
-* **[8. Timers et interruptions](#8-timers-et-interruptions)**
-* **[9. Communication série (UART, SPI, I2C)](#9-communication-série-uart-spi-i2c)**
-* **[10. Bonnes pratiques en embarqué](#10-bonnes-pratiques-en-embarqué)**
+* **[Qu’est-ce qu’un système embarqué ?](#1-quest-ce-quun-système-embarqué-)**
+* **[Pourquoi le langage C en embarqué ?](#2-pourquoi-le-langage-c-en-embarqué-)**
+* **[Types de données utiles en embarqué](#3-types-de-données-utiles-en-embarqué)**
+* **[Manipulation des registres et bits](#4-manipulation-des-registres-et-bits)**
+* **[Pointeurs et mémoire](#5-pointeurs-et-mémoire)**
+* **[Structure d’un programme C embarqué](#6-structure-dun-programme-c-embarqué)**
+* **[Entrées/Sorties (GPIO)](#7-entréessorties-gpio)**
+* **[Timers et interruptions](#8-timers-et-interruptions)**
+* **[Communication série (UART, SPI, I2C)](#9-communication-série-uart-spi-i2c)**
+* **[Bonnes pratiques en embarqué](#10-bonnes-pratiques-en-embarqué)**
 
 ---
 
